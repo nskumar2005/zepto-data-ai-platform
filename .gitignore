@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Database temporary files
+*.db-journal
+
+# Generated local vector database
+support_assistant/chroma_db/
+
+# Keep capstone results/artifacts tracked
+# analytics/models/*.joblib
+# analytics/figures/*.png
+# analytics/output/*.csv
+# analytics/output/*.txt
+# data_pipeline/output/*.db
+# data_pipeline/output/*.csv
+# data_pipeline/output/*.txt

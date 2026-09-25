@@ -1,0 +1,5 @@
+MAE: 20.80837492158196
+RMSE: 30.511026026070596
+R2: 0.39840707617725346
+Adjusted_R2: 0.36259797356875667
+heteroscedasticity: possible heteroscedasticity

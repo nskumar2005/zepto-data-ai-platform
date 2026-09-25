@@ -1,0 +1,16 @@
+Classifier comparison:
+                     accuracy  precision  recall      f1     auc
+model                                                           
+Logistic Regression    0.8045     0.7931  0.6667  0.7244  0.8437
+Decision Tree          0.7654     0.7547  0.5797  0.6557  0.7971
+Random Forest          0.8101     0.7966  0.6812  0.7344  0.8287
+
+Regression metrics:
+MAE                                     20.808375
+RMSE                                    30.511026
+R2                                       0.398407
+Adjusted_R2                              0.362598
+heteroscedasticity    possible heteroscedasticity
+
+Deployment recommendation:
+Based on the held-out test split, Random Forest has the highest F1 score (0.7344) among the three classifiers. Its accuracy is 0.8101, precision is 0.7966, recall is 0.6812, and AUC is 0.8287. These metrics should be considered together because accuracy, precision, recall, F1, and AUC capture different aspects of classification performance. The selected pipeline is saved with preprocessing and the estimator together so it can accept raw feature rows end-to-end.

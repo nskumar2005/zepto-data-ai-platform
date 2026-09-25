@@ -1,0 +1,5 @@
+column,missing_pct,strategy
+deck,77.21661054994388,Encode missing as 'Unknown': 77.22% missing (>30%).
+age,19.865319865319865,Median imputation: 19.87% missing (5%-30%).
+embarked,0.22446689113355783,Drop rows: 0.22% missing (<5% threshold).
+embark_town,0.22446689113355783,Drop rows: 0.22% missing (<5% threshold).

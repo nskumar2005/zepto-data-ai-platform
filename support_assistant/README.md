@@ -52,7 +52,19 @@ General example:
 {"query":"What is the capital of France?"}
 ```
 
-Record the actual raw JSON returned by your local run here before final submission. Do not fabricate transcripts.
+### Actual local run responses
+
+Policy-style example:
+
+```json
+{"answer":"Based on the retrieved context: Delivery Policy: Zepto delivers grocery and household essentials to serviceable pin codes within 10 to 30 minutes of order confirmation, depending on the customer's delivery zone and current order vol","sources":["doc_01#0","doc_02#0","doc_05#0"],"confidence":1.0}
+```
+
+General example:
+
+```json
+{"answer":"I can only answer questions about Zepto policies right now.","sources":[],"confidence":1.0}
+```
 
 ## Docker
 
