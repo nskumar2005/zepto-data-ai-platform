@@ -1,3 +1,5 @@
+=== data source ===
+Seaborn load_dataset (network/cache)
 === df.info() ===
 
 <class 'pandas.core.frame.DataFrame'>
@@ -75,13 +77,28 @@ male    1         0.368852
         2         0.157407
         3         0.135447
 
+=== boolean-mask survival-rate verification ===
+sex=female: 0.740385
+sex=male: 0.188908
+pclass=1: 0.626168
+pclass=2: 0.472826
+pclass=3: 0.242363
+sex=female, pclass=1: 0.967391
+sex=female, pclass=2: 0.921053
+sex=female, pclass=3: 0.500000
+sex=male, pclass=1: 0.368852
+sex=male, pclass=2: 0.157407
+sex=male, pclass=3: 0.135447
+
 === two strongest absolute off-diagonal correlations ===
 pclass vs fare: r=-0.5482
 sibsp vs parch: r=0.4145
-Interpretation — Survival varies strongly by sex and pclass; the grouped bars show how class modifies the sex-based survival pattern.
-Interpretation — Fare distributions differ across survival groups and sex, showing that ticket price is associated with passenger outcomes while also reflecting passenger segment differences.
-Interpretation — The scatter plot combines age and fare with survival status and helps reveal whether high-fare and age regions contain different survival patterns.
-Interpretation — Survival rates are compared across the class hierarchy separately for each sex, providing a compact multivariate view of the main categorical relationships.
+Interpretation — The strongest correlation is between pclass and fare (r=-0.5482), which is a negative moderate-to-strong linear association in this dataset. Because correlation is an association measure, it should not be interpreted as evidence that one variable causes the other.
+Interpretation — The second-strongest correlation is between sibsp and parch (r=0.4145), indicating a positive moderate linear association. This relationship describes how the two measured variables move together in the cleaned sample and does not establish causation.
+Interpretation — Survival rates differ substantially by sex within the passenger classes shown in the chart. The grouping also shows that passenger class changes the size of the observed survival gap between the sex categories.
+Interpretation — Fare distributions differ across survival outcomes and also vary between the sex categories shown. The plot suggests that fare is associated with passenger segment and survival in this sample, but the overlapping distributions show that fare alone does not separate the groups perfectly.
+Interpretation — The scatter plot combines age and fare with survival status, making it possible to inspect several variables at once. Higher-fare observations are concentrated in particular parts of the plot, while survival points remain distributed across multiple ages and fare levels.
+Interpretation — The point plot compares survival rates across passenger classes separately for each sex. It provides a compact view of how the class gradient and sex-based differences appear together in the cleaned dataset.
 
 === EDA-only z-score check ===
 age mean/std: 0.000000/1.000000

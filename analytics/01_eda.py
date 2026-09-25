@@ -143,15 +143,27 @@ def main():
     # 1. LOAD TITANIC DATASET EXACTLY ONCE
     # ---------------------------------------------------------
 
-    df = sns.load_dataset("titanic")
-
-    # Required offline fallback.
-    df.to_csv(
-        ROOT / "titanic.csv",
-        index=False
-    )
+    # Required offline fallback: attempt the single allowed Seaborn load,
+    # then use the committed CSV when the network/cache is unavailable.
+    fallback_path = ROOT / "titanic.csv"
+    try:
+        df = sns.load_dataset("titanic")
+        df.to_csv(
+            fallback_path,
+            index=False
+        )
+        data_source = "Seaborn load_dataset (network/cache)"
+    except Exception as exc:
+        if not fallback_path.exists():
+            raise RuntimeError(
+                "Titanic dataset could not be loaded from Seaborn and "
+                "the committed offline fallback is missing."
+            ) from exc
+        df = pd.read_csv(fallback_path)
+        data_source = "Committed analytics/titanic.csv offline fallback"
 
     profile = []
+    profile.append(f"=== data source ===\n{data_source}")
 
     # ---------------------------------------------------------
     # 2. DATA PROFILE
@@ -370,6 +382,32 @@ def main():
         + sex_class_rate.to_string()
     )
 
+    # Explicit boolean-mask verification of the required bivariate breakdowns.
+    # The sex + pclass calculation intentionally uses an & combination.
+    mask_survival_lines = ["\n=== boolean-mask survival-rate verification ==="]
+    for sex_value in sorted(cleaned["sex"].dropna().unique()):
+        mask = cleaned["sex"] == sex_value
+        rate = cleaned.loc[mask, "survived"].mean()
+        mask_survival_lines.append(f"sex={sex_value}: {rate:.6f}")
+
+    for pclass_value in sorted(cleaned["pclass"].dropna().unique()):
+        mask = cleaned["pclass"] == pclass_value
+        rate = cleaned.loc[mask, "survived"].mean()
+        mask_survival_lines.append(f"pclass={pclass_value}: {rate:.6f}")
+
+    for sex_value in sorted(cleaned["sex"].dropna().unique()):
+        for pclass_value in sorted(cleaned["pclass"].dropna().unique()):
+            mask = (
+                (cleaned["sex"] == sex_value)
+                & (cleaned["pclass"] == pclass_value)
+            )
+            rate = cleaned.loc[mask, "survived"].mean()
+            mask_survival_lines.append(
+                f"sex={sex_value}, pclass={pclass_value}: {rate:.6f}"
+            )
+
+    profile.extend(mask_survival_lines)
+
     # ---------------------------------------------------------
     # 7. EXACT SIX-COLUMN CORRELATION MATRIX
     # ---------------------------------------------------------
@@ -434,6 +472,40 @@ def main():
         for _, a, b, r in top2
     )
 
+    if top2:
+        first_abs, first_a, first_b, first_r = top2[0]
+        first_direction = "positive" if first_r > 0 else "negative"
+        first_strength = (
+            "moderate-to-strong" if first_abs >= 0.5
+            else "moderate" if first_abs >= 0.3
+            else "weak-to-moderate"
+        )
+        profile.append(
+            "Interpretation — The strongest correlation is "
+            f"between {first_a} and {first_b} "
+            f"(r={first_r:.4f}), which is a {first_direction} "
+            f"{first_strength} linear association in this dataset. "
+            "Because correlation is an association measure, it should not be "
+            "interpreted as evidence that one variable causes the other."
+        )
+
+    if len(top2) > 1:
+        second_abs, second_a, second_b, second_r = top2[1]
+        second_direction = "positive" if second_r > 0 else "negative"
+        second_strength = (
+            "moderate-to-strong" if second_abs >= 0.5
+            else "moderate" if second_abs >= 0.3
+            else "weak-to-moderate"
+        )
+        profile.append(
+            "Interpretation — The second-strongest correlation is "
+            f"between {second_a} and {second_b} "
+            f"(r={second_r:.4f}), indicating a {second_direction} "
+            f"{second_strength} linear association. "
+            "This relationship describes how the two measured variables move "
+            "together in the cleaned sample and does not establish causation."
+        )
+
     # ---------------------------------------------------------
     # 8. MULTIVARIATE CHART 1
     # ---------------------------------------------------------
@@ -456,10 +528,10 @@ def main():
     )
 
     profile.append(
-        "Interpretation — Survival varies "
-        "strongly by sex and pclass; the grouped "
-        "bars show how class modifies the "
-        "sex-based survival pattern."
+        "Interpretation — Survival rates differ substantially by sex "
+        "within the passenger classes shown in the chart. "
+        "The grouping also shows that passenger class changes the size of "
+        "the observed survival gap between the sex categories."
     )
 
     # ---------------------------------------------------------
@@ -484,11 +556,11 @@ def main():
     )
 
     profile.append(
-        "Interpretation — Fare distributions "
-        "differ across survival groups and sex, "
-        "showing that ticket price is associated "
-        "with passenger outcomes while also "
-        "reflecting passenger segment differences."
+        "Interpretation — Fare distributions differ across survival outcomes "
+        "and also vary between the sex categories shown. "
+        "The plot suggests that fare is associated with passenger segment and "
+        "survival in this sample, but the overlapping distributions show that "
+        "fare alone does not separate the groups perfectly."
     )
 
     # ---------------------------------------------------------
@@ -514,10 +586,11 @@ def main():
     )
 
     profile.append(
-        "Interpretation — The scatter plot combines "
-        "age and fare with survival status and helps "
-        "reveal whether high-fare and age regions "
-        "contain different survival patterns."
+        "Interpretation — The scatter plot combines age and fare with survival "
+        "status, making it possible to inspect several variables at once. "
+        "Higher-fare observations are concentrated in particular parts of the "
+        "plot, while survival points remain distributed across multiple ages "
+        "and fare levels."
     )
 
     # ---------------------------------------------------------
@@ -543,11 +616,10 @@ def main():
     )
 
     profile.append(
-        "Interpretation — Survival rates are "
-        "compared across the class hierarchy "
-        "separately for each sex, providing a "
-        "compact multivariate view of the main "
-        "categorical relationships."
+        "Interpretation — The point plot compares survival rates across "
+        "passenger classes separately for each sex. "
+        "It provides a compact view of how the class gradient and sex-based "
+        "differences appear together in the cleaned dataset."
     )
 
     # ---------------------------------------------------------

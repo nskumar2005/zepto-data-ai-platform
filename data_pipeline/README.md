@@ -13,7 +13,7 @@ python data_pipeline/pipeline.py
 - `output/books.sqlite3` — generated normalized database.
 - `output/clean_books.csv` — cleaned dataset.
 - `output/sql_outputs.txt` — query strings and printed outputs.
-- `output/pandas_sql_vs_merge.txt` — comparison of the SQL join result with `pd.merge`.
+- `output/sql_outputs.txt` — comparison of the SQL join result with `pd.merge` is included at the end of this file.
 
 ## Cleaning decisions
 - Price is parsed into `price_gbp` as float.

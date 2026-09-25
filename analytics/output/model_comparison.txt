@@ -1,9 +1,23 @@
+Class balance and stratification:
+Not survived (0): 549 (61.62%)
+Survived (1): 342 (38.38%)
+
+Stratification preserves approximately the same survived/not-survived class proportions in both the training and test splits. This matters because the target classes are imbalanced, so an unstratified split could produce a less representative test set.
+
 Classifier comparison:
                      accuracy  precision  recall      f1     auc
-model                                                           
+model
 Logistic Regression    0.8045     0.7931  0.6667  0.7244  0.8437
 Decision Tree          0.7654     0.7547  0.5797  0.6557  0.7971
 Random Forest          0.8101     0.7966  0.6812  0.7344  0.8287
+
+Imbalance strategy comparison:
+                       accuracy  precision  recall      f1     auc
+strategy
+baseline                 0.8045     0.7931  0.6667  0.7244  0.8437
+class_weight=balanced    0.8045     0.7297  0.7826  0.7552  0.8464
+SMOTE training fold      0.8101     0.7397  0.7826  0.7606  0.8414
+Imbalance conclusion: SMOTE training fold produced the highest F1 (0.7606) on the held-out test split. Its recall was 0.7826 and precision was 0.7397, so on this split it provided the strongest balance between identifying survivors and limiting false positive predictions among the three tested strategies.
 
 Regression metrics:
 MAE                                     20.808375
